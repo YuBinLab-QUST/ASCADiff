@@ -1,0 +1,20 @@
+model:
+
+ checkpoint: # Replace it with the path to the checkpoint
+
+
+
+
+
+
+sample:
+  seed: 2025
+  num_samples: 100
+  num_steps: 1000
+  pos_only: False
+  center_pos_mode: protein
+  sample_num_atoms: prior
+
+  target_prior: [ 0.80, 1.00, 12.00 ]
+  prior_guidance_scale: 4.0
+
