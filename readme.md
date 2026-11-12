@@ -1,4 +1,4 @@
-## ASCADiff: Adaptive Sparse Conditional Attention Diffusion for Structure-Based 3D Molecular Design
+## ASCADiff: Adaptive Sparse Conditional Attention Diffusion for Structure-based 3D Molecular Design
 
 Official implementation of ASCADiff, a conditional diffusion framework
 for protein-pocket guided three-dimensional molecular generation.
