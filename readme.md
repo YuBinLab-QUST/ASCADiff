@@ -11,14 +11,38 @@ molecular generation under structural and property constraints.
 
 ## Data
 
-The data preparation follows previous structure-based molecular generation  methods. The CrossDocked2020 dataset can be downloaded from its official  source. After downloading the dataset, please run the provided preprocessing  scripts to generate the required data format for ASCADiff.
-The required preprocessing scripts are provided in this archive.
+The data used for training / evaluating the model are organized in the [data](https://drive.google.com/drive/folders/1CzwxmTpjbrt83z_wBzcQncq84OVDPurM?dmr=1&ec=wgc-drive-[module]-goto) Google Drive folder.
 
-```txt
-scripts/data_preparation
-```
+To train the model from scratch, you need to download the preprocessed lmdb file and split file:
 
+* `crossdocked_v1.1_rmsd1.0_pocket10_processed_final.lmdb`
+* `crossdocked_pocket10_pose_split.pt`
 
+To evaluate the model on the test set, you need to download _and_ unzip the `test_set.zip`. It includes the original PDB files that will be used in Vina Docking.
+
+If you want to process the dataset from scratch, you need to download CrossDocked2020 v1.1 from [here](https://bits.csb.pitt.edu/files/crossdock2020/), save it into `data/CrossDocked2020`, and run the scripts in `scripts/data_preparation`:
+
+* [clean_crossdocked.py](scripts/data_preparation/clean_crossdocked.py) will filter the original dataset and keep the ones with RMSD < 1A.
+  It will generate a `index.pkl` file and create a new directory containing the original filtered data (corresponds to `crossdocked_v1.1_rmsd1.0.tar.gz` in the drive). *You don't need these files if you have downloaded .lmdb file.*
+
+    ```bash
+  python scripts/data_preparation/clean_crossdocked.py --source data/CrossDocked2020 --dest data/crossdocked_v1.1_rmsd1.0 --rmsd_thr 1.0
+    ```
+
+* [extract_pockets.py](scripts/data_preparation/extract_pockets.py) will clip the original protein file to a 10A region around the binding molecule. E.g.
+
+  ```bash
+  python scripts/data_preparation/extract_pockets.py --source data/crossdocked_v1.1_rmsd1.0 --dest data/crossdocked_v1.1_rmsd1.0_pocket10
+  ```
+
+* [split_pl_dataset.py](scripts/data_preparation/split_pl_dataset.py) will split the training and test set. We use the same split `split_by_name.pt` as 
+  [AR](https://arxiv.org/abs/2203.10446) and [Pocket2Mol](https://arxiv.org/abs/2205.07249), which can also be downloaded in the Google Drive - data folder.
+
+    ```bash
+  python scripts/data_preparation/split_pl_dataset.py --path data/crossdocked_v1.1_rmsd1.0_pocket10 --dest data/crossdocked_pocket10_pose_split.pt --fixed_split data/split_by_name.pt
+    ```
+
+## Training
 
 ------------------------------------------------------------------------
 
